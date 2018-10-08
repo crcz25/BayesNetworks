@@ -7,6 +7,8 @@ class BayesNode:
     self.parents = parents
     self.CPT = CPT
 
+  def __str__(self):
+    return "Node(Node: <%s>, Parent: <%s>, Prob: <%s>)" % (self.name, self.parents, self.CPT)
 
 
 def probabilitiesOf(query, nodes):
@@ -43,9 +45,10 @@ def main():
           if n in i and n != node and n not in parents:
             parents.append(n)
 
+   
+    bayesian_network[node] = BayesNode(node, parents, curr_node_prob)
 
     #Calculate CPT's
-
 
 
 
@@ -54,6 +57,12 @@ def main():
     print('Node', node)
     print('Parents', parents)
     print('Probs', curr_node_prob)
+    print()
+
+  #pprint(bayesian_network)
+
+  for key,value in bayesian_network.items():
+    print('Key', key, '\n', value)
 
   """
   for i in range(2, n + 2):
