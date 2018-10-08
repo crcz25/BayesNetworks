@@ -15,10 +15,7 @@ def probabilitiesOf(query, nodes):
     print('One prob')
   else:
     print('Evidence')
-    filtered = list(
-        filter(
-            lambda x: (x[1:x.find('|')]).count(query) > 0)
-    )
+    filtered = list(filter(lambda x: (x[0:x.find('|')]).count(query) > 0))
     print(filtered)
   pass
 
@@ -32,22 +29,31 @@ def main():
   n = int(lines[1])
   probabilities = [item for item in lines[2:n + 2]]
   #print(prob)
+  bayesian_network = {}
 
   for node in nodes:
-    # Get Parents from node
     parents = []
     curr_node_prob = list(filter(lambda x: (x[0:x.find('|')]).count(node) > 0, probabilities))
     count_prob = len(curr_node_prob)
 
+    # Get Parents from node
     if count_prob > 1:
       for i in curr_node_prob:
         for n in nodes:
           if n in i and n != node and n not in parents:
             parents.append(n)
 
+
+    #Calculate CPT's
+
+
+
+
+
     print()
-    print('Node', node, 'Filtered', curr_node_prob)
+    print('Node', node)
     print('Parents', parents)
+    print('Probs', curr_node_prob)
 
   """
   for i in range(2, n + 2):
