@@ -54,7 +54,7 @@ def main():
     print('Probs', curr_node_prob)
     print()
 
-  print('Tests')
+  print('Prob to test')
   pprint(tests)
   print()
 
