@@ -1,4 +1,5 @@
 import fileinput
+import json
 from pprint import pprint
 
 class BayesNode:
@@ -8,7 +9,10 @@ class BayesNode:
     self.CPT = CPT
 
   def __str__(self):
-    return "Node(Node: <%s>, Parent: <%s>, Prob: <%s>)" % (self.name, self.parents, self.CPT)
+    print("Node(Node: <%s>, Parent: <%s>)" % (self.name, self.parents))
+    print("Probab Table")
+    pprint(self.CPT)
+    return ""
 
 def main():
   lines = []
@@ -39,15 +43,36 @@ def main():
     # Calculate Probab Table
     CPT = {}
 
-    bayesian_network[node] = BayesNode(node, parents, CPT)
-
     #Create CPT's
+    #print('Node', node)
+    #print()
     for line in curr_node_prob:
       given, prob = line.split('=')
       given = given.split(",")
-      #print(given)
-
-
+      aux = ""
+      for item in given:
+        #print('not', item, '!=', node)
+        if item[1:] != node:
+          aux += item
+        else:
+          aux += node
+        #  print('Key', aux)
+        aux += ','
+        #print()
+      #print(aux)
+      if len(curr_node_prob) > 1:
+        tk = '+' + aux[1:-1]
+        fk = '-' + aux[1:-1]
+      else:
+        tk = '+' + aux[:-1]
+        fk = '-' + aux[:-1]
+      CPT[tk] = float(prob)
+      CPT[fk] = 1 - float(prob)
+      #print('Given', given)
+      #print()
+      #pprint(CPT)
+    bayesian_network[node] = BayesNode(node, parents, CPT)
+    """
     print()
     print('Node', node)
     print('Parents', parents)
@@ -57,9 +82,10 @@ def main():
   print('Prob to test')
   pprint(tests)
   print()
+  """
 
-
-  print('DICTIONARY JUST IN CASE')
+  #print('DICTIONARY JUST IN CASE')
+  print()
   for key,value in bayesian_network.items():
     print('Key', key, '\n', value)
 
