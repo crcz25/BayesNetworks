@@ -10,19 +10,9 @@ class BayesNode:
   def __str__(self):
     return "Node(Node: <%s>, Parent: <%s>, Prob: <%s>)" % (self.name, self.parents, self.CPT)
 
-
-def probabilitiesOf(query, nodes):
-  print('ProbabilitesOf')
-  if len(query) == 1:
-    print('One prob')
-  else:
-    print('Evidence')
-    filtered = list(filter(lambda x: (x[0:x.find('|')]).count(query) > 0))
-    print(filtered)
-  pass
-
 def main():
   lines = []
+  s = len(lines)
 
   for line in fileinput.input():
     lines.append(line.rstrip())
@@ -30,7 +20,8 @@ def main():
   nodes = lines[0].replace(' ', '').split(',')
   n = int(lines[1])
   probabilities = [item for item in lines[2:n + 2]]
-  #print(prob)
+  t = int(lines[n + 2])
+  tests = [item for item in lines[(s-t):]]
   bayesian_network = {}
 
   for node in nodes:
@@ -45,12 +36,16 @@ def main():
           if n in i and n != node and n not in parents:
             parents.append(n)
 
-   
-    bayesian_network[node] = BayesNode(node, parents, curr_node_prob)
+    # Calculate Probab Table
+    CPT = {}
 
-    #Calculate CPT's
+    bayesian_network[node] = BayesNode(node, parents, CPT)
 
-
+    #Create CPT's
+    for line in curr_node_prob:
+      given, prob = line.split('=')
+      given = given.split(",")
+      #print(given)
 
 
     print()
@@ -59,28 +54,15 @@ def main():
     print('Probs', curr_node_prob)
     print()
 
-  #pprint(bayesian_network)
+  print('Tests')
+  pprint(tests)
+  print()
 
+
+  print('DICTIONARY JUST IN CASE')
   for key,value in bayesian_network.items():
     print('Key', key, '\n', value)
 
-  """
-  for i in range(2, n + 2):
-    query = lines[i].split('|')
-    if len(query) == 1:
-      probabilitiesOf(query, nodes)
-    else:
-      evidence = query[1]
-      probabilitiesOf(query, nodes)
-  """
-
-  #tests = int(lines[5])
-  #pprint(lines)
-
-  #print()
-  #print('Nodes', nodes)
-  #print('Num of Probabilities', n)
-  #print('Tests', tests)
   pass
 
 
