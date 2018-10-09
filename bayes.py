@@ -13,19 +13,9 @@ class BayesNode:
     print("Probab Table")
     pprint(self.CPT)
     return ""
-
-def main():
-  lines = []
-  s = len(lines)
-
-  for line in fileinput.input():
-    lines.append(line.rstrip())
-
-  nodes = lines[0].replace(' ', '').split(',')
-  n = int(lines[1])
-  probabilities = [item for item in lines[2:n + 2]]
-  t = int(lines[n + 2])
-  tests = [item for item in lines[(s-t):]]
+    
+    
+def generateBayesNetwork(nodes, probabilities):
   bayesian_network = {}
 
   for node in nodes:
@@ -83,7 +73,27 @@ def main():
   pprint(tests)
   print()
   """
+  
+  return bayesian_network
 
+
+def main():
+  lines = []
+  s = len(lines)
+
+  for line in fileinput.input():
+    lines.append(line.rstrip())
+
+  nodes = lines[0].replace(' ', '').split(',')
+  
+  n = int(lines[1])
+  probabilities = [item for item in lines[2:n + 2]]
+  
+  t = int(lines[n + 2])
+  tests = [item for item in lines[(s-t):]]
+  
+  bayesian_network = generateBayesNetwork(nodes, probabilities)
+  
   #print('DICTIONARY JUST IN CASE')
   print()
   for key,value in bayesian_network.items():
