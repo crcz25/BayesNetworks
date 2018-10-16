@@ -13,8 +13,8 @@ class BayesNode:
     print("Probab Table")
     pprint(self.CPT)
     return ""
-    
-    
+
+
 # Parser function
 def generateBayesNetwork(nodes, probabilities):
   bayesian_network = {}
@@ -40,14 +40,14 @@ def generateBayesNetwork(nodes, probabilities):
     for line in curr_node_prob:
       splitVariables, prob = line.split('=')
       splitGiven = splitVariables.split("|")
-      
+
       #print(splitGiven)
       variable = splitGiven[0].replace(' ', '')
       given = []
       if len(splitGiven) > 1:
         given = splitGiven[1].replace(' ', '').split(",")
         given.sort(key=lambda x: x[1:])
-        
+
       #print(splitGiven)
       aux = variable + "|"
       for item in given:
@@ -72,7 +72,7 @@ def generateBayesNetwork(nodes, probabilities):
       #print()
       #pprint(CPT)
     bayesian_network[node] = BayesNode(node, parents, CPT)
-  
+
   return bayesian_network
 
 # Auxiliar functions
@@ -83,43 +83,43 @@ def equalToEvidence(variables, evidence):
   for v in variables:
     if not inEvidence(v, evidence):
       return False
-      
+
   return True
 
 
 def getTopologicalSortedVariables(variables, bayesian_network):
   result = [v[1:] for v in variables]
-  
+
   for node in result:
     for parent in bayesian_network[node].parents:
       if not (parent in result):
-        result.append(parent) 
-  
+        result.append(parent)
+
   return result
 
 
 def getVariablesFromCombination(variables, n):
   ans = []
-  
+
   index = len(variables) - 1
   while index >= 0:
     if n % 2 == 1:
       ans.append('+' + variables[index])
     else:
       ans.append('-' + variables[index])
-      
+
     n //= 2
     index -= 1
-  
+
   return ans
 
 # Probability functions
 def chainRule(variables, bayesian_network):
   ans = 1.0
-  
+
   for v in variables:
     node = bayesian_network[v[1:]]
-    
+
     ctpKey = ""
     if len(node.parents) == 0:
       ctpKey = v
@@ -130,27 +130,27 @@ def chainRule(variables, bayesian_network):
           given.append('+' + parent)
         else:
           given.append('-' + parent)
-          
+
       given.sort(key=lambda x: x[1:])
       given = ",".join(given)
-      
+
       ctpKey = v + "|" + given
-      
+
     #print("KEY", ctpKey, node.CPT)
     ans *= node.CPT[ctpKey]
-    
+
   #print(ans)
   return ans
-      
+
 
 def conditionalProbability(variables, evidence, bn):
   return totalProbability(variables + evidence, bn) / totalProbability(evidence, bn)
 
 def totalProbability(evidence, bayesian_network):
   allNodes = getTopologicalSortedVariables(evidence, bayesian_network)
-  
+
   #print("ALL NODES", allNodes, evidence)
-  
+
   if equalToEvidence(allNodes, evidence):
     return chainRule(evidence, bayesian_network)
   else:
@@ -158,19 +158,19 @@ def totalProbability(evidence, bayesian_network):
     for node in allNodes:
       if not inEvidence(node, evidence):
         notInEvidence.append(node)
-        
+
     limit = pow(2, len(notInEvidence))
-    
+
     ans = 0
     for combination in range(limit):
       genVariables = getVariablesFromCombination(notInEvidence, combination)
-      
+
       ans += chainRule(evidence + genVariables, bayesian_network)
-    
+
     #print("notInEvidence, ", notInEvidence)
-    
+
     return ans
-  
+
 def main():
   lines = []
   s = len(lines)
@@ -179,13 +179,13 @@ def main():
     lines.append(line.rstrip())
 
   nodes = lines[0].replace(' ', '').split(',')
-  
+
   n = int(lines[1])
   probabilities = [item for item in lines[2:n + 2]]
-  
+
   t = int(lines[n + 2])
   tests = [item for item in lines[(s-t):]]
-  
+
   bayesian_network = generateBayesNetwork(nodes, probabilities)
 
   for t in tests:
@@ -194,8 +194,8 @@ def main():
       ans = totalProbability(query[0].split(","), bayesian_network)
     else:
       ans = conditionalProbability(query[0].split(","), query[1].split(","), bayesian_network)
-      
-      
+
+
     print(round(ans, 7))
 
 
