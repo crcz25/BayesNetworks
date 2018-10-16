@@ -15,6 +15,7 @@ class BayesNode:
     return ""
     
     
+# Parser function
 def generateBayesNetwork(nodes, probabilities):
   bayesian_network = {}
 
@@ -71,17 +72,6 @@ def generateBayesNetwork(nodes, probabilities):
       #print()
       #pprint(CPT)
     bayesian_network[node] = BayesNode(node, parents, CPT)
-    """
-    print()
-    print('Node', node)
-    print('Parents', parents)
-    print('Probs', curr_node_prob)
-    print()
-
-  print('Prob to test')
-  pprint(tests)
-  print()
-  """
   
   return bayesian_network
 
@@ -177,33 +167,10 @@ def totalProbability(evidence, bayesian_network):
       
       ans += chainRule(evidence + genVariables, bayesian_network)
     
-        
     #print("notInEvidence, ", notInEvidence)
     
     return ans
   
-  
-
-## Compute
-def enumarationAsk(x, evidence, bayesian_network):
-  
-  
-  evidence_xi = evidence[:]
-  evidence_xi.append(x)
-  
-  xi = enumerateAll(bayesian_network.keys(), bayesian_network, evidence_xi)
-  return xi
-  
-def enumerateAll(variables, bayesian_network, evidence):
-  if len(variables) == 0:
-    return 1
-  y, eyi = variables[0], variables[1:]
-  
-  if inEvidence(y, evidence):
-    pass
-  else:
-    pass
-
 def main():
   lines = []
   s = len(lines)
@@ -219,15 +186,7 @@ def main():
   t = int(lines[n + 2])
   tests = [item for item in lines[(s-t):]]
   
-  #print(probabilities)
-  
   bayesian_network = generateBayesNetwork(nodes, probabilities)
-  
-  #print('DICTIONARY JUST IN CASE')
-  #print()
-  #for key,value in bayesian_network.items():
-  #  print('Key', key, '\n', value)
-
 
   for t in tests:
     query = t.replace(' ', '').split("|")
@@ -238,7 +197,6 @@ def main():
       
       
     print(round(ans, 7))
-
 
 
 if __name__ == '__main__':
