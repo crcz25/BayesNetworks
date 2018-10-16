@@ -41,13 +41,13 @@ def generateBayesNetwork(nodes, probabilities):
       splitGiven = splitVariables.split("|")
       
       #print(splitGiven)
-      variable = splitGiven[0]
+      variable = splitGiven[0].replace(' ', '')
       given = []
       if len(splitGiven) > 1:
-        given = splitGiven[1].split(",")
+        given = splitGiven[1].replace(' ', '').split(",")
         given.sort(key=lambda x: x[1:])
         
-      print(splitGiven)
+      #print(splitGiven)
       aux = variable + "|"
       for item in given:
         #print('not', item, '!=', node)
@@ -146,10 +146,10 @@ def chainRule(variables, bayesian_network):
       
       ctpKey = v + "|" + given
       
-    print("KEY", ctpKey)
+    #print("KEY", ctpKey, node.CPT)
     ans *= node.CPT[ctpKey]
     
-  print(ans)
+  #print(ans)
   return ans
       
 
@@ -159,7 +159,7 @@ def conditionalProbability(variables, evidence, bn):
 def totalProbability(evidence, bayesian_network):
   allNodes = getTopologicalSortedVariables(evidence, bayesian_network)
   
-  print("ALL NODES", allNodes, evidence)
+  #print("ALL NODES", allNodes, evidence)
   
   if equalToEvidence(allNodes, evidence):
     return chainRule(evidence, bayesian_network)
@@ -178,7 +178,7 @@ def totalProbability(evidence, bayesian_network):
       ans += chainRule(evidence + genVariables, bayesian_network)
     
         
-    print("notInEvidence, ", notInEvidence)
+    #print("notInEvidence, ", notInEvidence)
     
     return ans
   
@@ -219,22 +219,25 @@ def main():
   t = int(lines[n + 2])
   tests = [item for item in lines[(s-t):]]
   
-  print(probabilities)
+  #print(probabilities)
   
   bayesian_network = generateBayesNetwork(nodes, probabilities)
   
   #print('DICTIONARY JUST IN CASE')
-  print()
-  for key,value in bayesian_network.items():
-    print('Key', key, '\n', value)
+  #print()
+  #for key,value in bayesian_network.items():
+  #  print('Key', key, '\n', value)
 
 
   for t in tests:
-    query = t.split("|")
+    query = t.replace(' ', '').split("|")
     if len(query) == 1:
-      print("UNOO")
+      ans = totalProbability(query[0].split(","), bayesian_network)
     else:
-      print(conditionalProbability(query[0].split(","), query[1].split(","), bayesian_network))
+      ans = conditionalProbability(query[0].split(","), query[1].split(","), bayesian_network)
+      
+      
+    print(round(ans, 7))
 
 
 
